@@ -46,12 +46,14 @@
     border-bottom:1px solid rgba(237,231,214,.18);
     padding-bottom:16px;
   }
-  .brand .mark{
-    width:42px;height:42px;border-radius:50% 50% 50% 4px;
-    background:linear-gradient(145deg,var(--gold),#9c772a);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Playfair Display',serif;font-weight:700;color:var(--navy);
-    margin-bottom:10px;font-size:18px;
+  .brand .logo-img{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    border:2px solid var(--gold);
+    object-fit:cover;
+    margin-bottom:10px;
+    display:block;
   }
   .brand .en{font-size:13px;letter-spacing:.14em;color:#cdbf94;text-transform:uppercase;}
   .brand .bn{font-size:19px;font-weight:700;margin-top:3px;color:#fff;}
@@ -277,7 +279,7 @@
 <div id="app">
   <aside class="sidebar">
     <div class="brand">
-      <div class="mark">MA</div>
+      <img src="image_0a0d37.png" alt="Markazul Abrar Logo" class="logo-img">
       <div class="en">Markazul Abrar</div>
       <div class="bn">ইসলামিক স্কুল</div>
     </div>
@@ -426,7 +428,7 @@ function render(){
 
   if(view==='list'){
     setTopbar(activeClass, 'সংরক্ষিত শিক্ষার্থী রিপোর্টসমূহ',
-      <button class="btn btn-primary bn" id="newReportBtn">+ নতুন রিপোর্ট</button>);
+      `<button class="btn btn-primary bn" id="newReportBtn">+ নতুন রিপোর্ট</button>`);
     const items = INDEX.filter(r=>r.className===activeClass).sort((a,b)=> (b.year-a.year)|| (b.monthIdx-a.monthIdx) || a.name.localeCompare(b.name));
     if(items.length===0){
       root.innerHTML = `<div class="empty">
@@ -436,12 +438,12 @@ function render(){
       </div>`;
       document.getElementById('newReportBtn2').addEventListener('click', startNewReport);
     } else {
-      root.innerHTML = <div class="report-grid">${items.map(r=>
-        <div class="report-card" data-id="${r.id}">
+      root.innerHTML = `<div class="report-grid">${items.map(r=>
+        `<div class="report-card" data-id="${r.id}">
           <div class="grade-pill mono">${esc(r.grade||'-')}</div>
           <div class="name bn">${esc(r.name)}</div>
           <div class="meta bn">রোল: ${esc(r.roll)} · ${esc(r.month)} ${r.year}</div>
-        </div>).join('')}</div>;
+        </div>`).join('')}</div>`;
       root.querySelectorAll('.report-card').forEach(c=>{
         c.addEventListener('click', ()=> openReport(c.dataset.id));
       });
@@ -452,7 +454,7 @@ function render(){
 
   if(view==='form'){
     setTopbar(editingId? 'রিপোর্ট সম্পাদনা' : 'নতুন রিপোর্ট', activeClass,
-      <button class="btn btn-ghost bn" id="backToListBtn">← তালিকায় ফিরুন</button>);
+      `<button class="btn btn-ghost bn" id="backToListBtn">← তালিকায় ফিরুন</button>`);
     root.innerHTML = formHtml(formData);
     wireForm();
     document.getElementById('backToListBtn').addEventListener('click', ()=>{ view='list'; render(); });
@@ -460,8 +462,8 @@ function render(){
   }
 
   if(view==='preview'){
-    setTopbar('রিপোর্ট প্রিভিউ', ${formData.studentName} — ${formData.month} ${formData.year},
-      <button class="btn btn-ghost bn" id="backToListBtn2">← তালিকায় ফিরুন</button>);
+    setTopbar('রিপোর্ট প্রিভিউ', `${formData.studentName} — ${formData.month} ${formData.year}`,
+      `<button class="btn btn-ghost bn" id="backToListBtn2">← তালিকায় ফিরুন</button>`);
     root.innerHTML = previewHtml(formData) + `
       <div class="preview-actions">
         <button class="btn btn-ghost bn" id="editBtn">✎ সম্পাদনা করুন</button>
@@ -518,7 +520,7 @@ function formHtml(d){
       <div class="section-head"><div class="badge">০</div><h2 class="bn">মাস ও শ্রেণি তথ্য</h2></div>
       <div class="grid4">
         <div class="field"><label class="bn">মাস</label>
-          <select id="f_month">${months.map(m=><option ${m===d.month?'selected':''}>${m}</option>).join('')}</select>
+          <select id="f_month">${months.map(m=>`<option ${m===d.month?'selected':''}>${m}</option>`).join('')}</select>
         </div>
         <div class="field"><label class="bn">বছর</label><input id="f_year" type="number" value="${d.year}"></div>
         <div class="field"><label class="bn">শ্রেণি</label><input value="${esc(d.className)}" disabled></div>
@@ -581,7 +583,7 @@ function formHtml(d){
       <div class="result-row">
         <div class="field" style="width:220px;"><label class="bn">সামগ্রিক গ্রেড</label>
           <select id="f_overallGrade">
-            ${['A+','A','A-','B','C','D','F'].map(g=><option ${g===d.overallGrade?'selected':''}>${g}</option>).join('')}
+            ${['A+','A','A-','B','C','D','F'].map(g=>`<option ${g===d.overallGrade?'selected':''}>${g}</option>`).join('')}
           </select>
         </div>
         <div style="font-size:12.5px;color:var(--muted);" class="bn">* বিষয়ভিত্তিক গড়ের ভিত্তিতে প্রস্তাবিত গ্রেড দেখানো হবে, প্রয়োজনে পরিবর্তন করুন।</div>
@@ -596,9 +598,9 @@ function formHtml(d){
 }
 
 function starsHtml(val, idx){
-  let h = <div class="stars" data-idx="${idx}">;
-  for(let i=1;i<=5;i++) h += <span class="star ${i<=val?'on':''}" data-v="${i}">★</span>;
-  h += </div>;
+  let h = `<div class="stars" data-idx="${idx}">`;
+  for(let i=1;i<=5;i++) h += `<span class="star ${i<=val?'on':''}" data-v="${i}">★</span>`;
+  h += `</div>`;
   return h;
 }
 
@@ -738,35 +740,34 @@ function previewHtml(d){
     const ct=parseFloat(s.ct)||0, hw=parseFloat(s.hw)||0, oral=parseFloat(s.oral)||0;
     const total = ct+hw+oral;
     const grade = gradeFromTotal(total);
-    return <tr><td class="bn">${esc(s.name)}</td><td>${s.ct||'—'}</td><td>${s.hw||'—'}</td><td>${s.oral||'—'}</td><td class="tot">${total||'—'}</td><td class="gr">${grade}</td></tr>;
+    return `<tr><td class="bn">${esc(s.name)}</td><td>${s.ct||'—'}</td><td>${s.hw||'—'}</td><td>${s.oral||'—'}</td><td class="tot">${total||'—'}</td><td class="gr">${grade}</td></tr>`;
   }).join('');
 
-  const behaveRows = [];
-  for(let i=0;i<BEHAVE_ITEMS.length;i+=2){
-    // handled in grid below via two separate columns; simpler: just list all in grid
-  }
   const behaveHtml = BEHAVE_ITEMS.map((label,i)=>{
     const v = d.behave[i]||0;
     let stars='';
-    for(let s=1;s<=5;s++) stars += <span class="${s<=v?'':'off'}">★</span>;
-    return <div class="row"><span class="bn">${label}</span><span class="pv-stars">${stars}</span></div>;
+    for(let s=1;s<=5;s++) stars += `<span class="${s<=v?'':'off'}">★</span>`;
+    return `<div class="row"><span class="bn">${label}</span><span class="pv-stars">${stars}</span></div>`;
   }).join('');
 
   const checkHtml = CHECK_ITEMS.map((label,i)=>{
     const on = !!d.checks[i];
-    return <div class="row"><span class="icon ${on?'':'off'}">${on?'✓':'○'}</span><span class="bn">${label}</span></div>;
+    return `<div class="row"><span class="icon ${on?'':'off'}">${on?'✓':'○'}</span><span class="bn">${label}</span></div>`;
   }).join('');
 
   return `
   <div class="preview-wrap"><div class="sheet">
-    <div class="sheet-head">
-      <div class="school-en">MARKAZUL ABRAR ISLAMIC SCHOOL</div>
-      <div class="school-bn bn">মারকাজুল আবরার ইসলামিক স্কুল</div>
-      <div class="rep-title bn">মাসিক অগ্রগতি প্রতিবেদন — MONTHLY PROGRESS REPORT</div>
-      <div class="sheet-meta bn">
-        <div>মাস: <b>${esc(d.month)} ${d.year}</b></div>
-        <div>শ্রেণি: <b>${esc(d.className)}</b></div>
-        <div>শাখা: <b>${esc(d.section)||'—'}</b></div>
+    <div class="sheet-head" style="display: flex; align-items: center; gap: 20px;">
+      <img src="image_0a0d37.png" alt="Logo" style="width: 65px; height: 65px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; flex-shrink: 0;">
+      <div>
+        <div class="school-en">MARKAZUL ABRAR ISLAMIC SCHOOL</div>
+        <div class="school-bn bn">মারকাজুল আবরার ইসলামিক স্কুল</div>
+        <div class="rep-title bn">মাসিক অগ্রগতি প্রতিবেদন — MONTHLY PROGRESS REPORT</div>
+        <div class="sheet-meta bn">
+          <div>মাস: <b>${esc(d.month)} ${d.year}</b></div>
+          <div>শ্রেণি: <b>${esc(d.className)}</b></div>
+          <div>শাখা: <b>${esc(d.section)||'—'}</b></div>
+        </div>
       </div>
     </div>
     <div class="sheet-body">
